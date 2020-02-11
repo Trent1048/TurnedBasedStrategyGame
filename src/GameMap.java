@@ -25,7 +25,10 @@ public class GameMap {
     private int getBuildingOccurrences(Building b) {
         int occurrences = 0;
         for(Building building : buildings) {
+            // counts each time it is the same class
             if(building.getClass().equals(b.getClass())) occurrences++;
+            // if it is the same exact object, don't allow the user to add it
+            if(building == b) throw new IllegalArgumentException("Building " + b + " has already been added");
         }
         return occurrences;
     }
