@@ -1,3 +1,5 @@
+import Buildings.Building;
+
 // holds all the buildings in the game
 public class GameMap {
     private int size;
@@ -27,6 +29,9 @@ public class GameMap {
     }
 
     public void addBuilding(Building building, int row, int col) {
+        if(spaces[row][col] != null) {
+            throw new IllegalArgumentException("There is already a building in that location");
+        }
         spaces[row][col] = building;
     }
 }
