@@ -1,6 +1,6 @@
 package Buildings;
 
-// anything that implements this can
+// anything that extends this can
 // be displayed on the game map
 public abstract class Building {
     protected int level;
