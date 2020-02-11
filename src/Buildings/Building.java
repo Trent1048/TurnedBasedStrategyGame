@@ -3,7 +3,7 @@ package Buildings;
 // anything that extends this can
 // be displayed on the game map
 public abstract class Building {
-    protected int level;
+    private int level;
 
     public Building() {
         level = 1;
