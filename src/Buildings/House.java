@@ -2,8 +2,8 @@ package Buildings;
 
 public class House extends Building {
 
-    public House(int x, int y, boolean friendly) {
-        super(x, y, friendly);
+    public House(Location location, boolean friendly) {
+        super(location, friendly);
     }
 
     @Override

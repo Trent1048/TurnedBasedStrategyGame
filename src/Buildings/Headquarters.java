@@ -1,32 +1,34 @@
 package Buildings;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 // the main thing where everything happens
 public class Headquarters extends Building {
 
+    // stores the location of every building on all
+    // HQs to make sure none are at the same spot
+    private static HashSet<Location> buildingLocations;
     private ArrayList<Building> buildings;
     private int size;
     private int resources;
     private static HashMap<String, Class> buildingTypeMap;
 
     static {
+        buildingLocations = new HashSet<>();
+
         buildingTypeMap = new HashMap<>();
         buildingTypeMap.put("H", House.class);
         buildingTypeMap.put("R", ResourceCollector.class);
         buildingTypeMap.put("M", MilitaryBase.class);
     }
 
-    public Headquarters(int x, int y, boolean friendly, int boardSize) {
-        super(x, y, friendly);
+    public Headquarters(Location location, boolean friendly, int boardSize) {
+        super(location, friendly);
         this.size = boardSize;
         resources = 5; // start with 5 resources
         buildings = new ArrayList<>();
         buildings.add(this);
+        buildingLocations.add(location);
     }
 
     // executes one turn for every building associated with this HQ
@@ -77,6 +79,15 @@ public class Headquarters extends Building {
                     int x = console.nextInt();
                     System.out.print("Y: ");
                     int y = console.nextInt();
+                    Location buildingLoc = new Location(x, y);
+
+                    // make sure the location is open
+                    if(buildingLocations.contains(buildingLoc)) {
+                        System.out.println("There is already a building in that location");
+                        return newResources;
+                    } else {
+                        buildingLocations.add(buildingLoc);
+                    }
 
                     // don't add if there are too many already
                     if(buildingAdditionIsAllowed(buildingType)) {
@@ -85,13 +96,13 @@ public class Headquarters extends Building {
                             newResources -= getBuildingPrice(buildingType);
                             switch (input) {
                                 case "H":
-                                    addBuilding(new House(x, y, isFriendly()));
+                                    buildings.add(new House(buildingLoc, isFriendly()));
                                     break;
                                 case "R":
-                                    addBuilding(new ResourceCollector(x, y, isFriendly()));
+                                    buildings.add(new ResourceCollector(buildingLoc, isFriendly()));
                                     break;
                                 case "M":
-                                    addBuilding(new MilitaryBase(x, y, isFriendly()));
+                                    buildings.add(new MilitaryBase(buildingLoc, isFriendly()));
                                     break;
                             }
                         } else {
@@ -162,28 +173,6 @@ public class Headquarters extends Building {
             return 3;
         }
         return 0;
-    }
-
-    public void addBuilding(Building building) {
-        int x = building.getLocation().getX();
-        int y = building.getLocation().getY();
-
-        // don't let the user place a building outside the map
-        if(x > size || y > size) throw new IllegalArgumentException("The selected row or column is out of the map");
-        for(Building b : buildings) {
-            // don't let a building overwrite an existing one
-            if (building.hasSameLocation(b)) {
-                throw new IllegalArgumentException("There is already a building in the selected location "
-                        + building.getLocation());
-            }
-        }
-        // makes sure there aren't too many buildings before adding it
-        if(getNumOfAllowedBuildings(building.getClass()) > getBuildingOccurrences(building.getClass())) {
-            buildings.add(building);
-        } else {
-            throw new IllegalArgumentException("The max number of building type: " +
-                    building.getClass() + " has been reached");
-        }
     }
 
     public ArrayList<Building> getBuildings() {

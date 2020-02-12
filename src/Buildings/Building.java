@@ -1,5 +1,7 @@
 package Buildings;
 
+import java.util.Objects;
+
 // anything that extends this can
 // be displayed on the game map
 public abstract class Building implements Comparable<Building> {
@@ -7,9 +9,9 @@ public abstract class Building implements Comparable<Building> {
     private Location location;
     private boolean friendly;
 
-    public Building(int x, int y, boolean friendly) {
+    public Building(Location location, boolean friendly) {
         level = 1;
-        location = new Location(x, y);
+        this.location = location;
         this.friendly = friendly;
     }
 
@@ -45,12 +47,6 @@ public abstract class Building implements Comparable<Building> {
         return location;
     }
 
-    // tests if two buildings are in the same location
-    public boolean hasSameLocation(Building other) {
-        return this.location.x == other.getLocation().x &&
-                this.location.y == other.getLocation().y;
-    }
-
     // for storing the location of the building
     public static class Location {
         private int x;
@@ -59,6 +55,20 @@ public abstract class Building implements Comparable<Building> {
         public Location(int x, int y) {
             this.x = x;
             this.y = y;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Location location = (Location) o;
+            return x == location.x &&
+                    y == location.y;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x, y);
         }
 
         public int getX() {

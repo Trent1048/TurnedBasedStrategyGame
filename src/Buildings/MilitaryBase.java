@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class MilitaryBase extends Building {
 
-    public MilitaryBase(int x, int y, boolean friendly) {
-        super(x, y, friendly);
+    public MilitaryBase(Location location, boolean friendly) {
+        super(location, friendly);
     }
 
     private void trainUnits() {

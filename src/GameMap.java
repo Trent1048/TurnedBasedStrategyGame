@@ -12,8 +12,8 @@ public class GameMap {
     public GameMap(int size, int x, int y) {
         this.size = size;
         // TODO randomize starting locations
-        friendlyHQ = new Headquarters(x, y, true, size);
-        Headquarters enemyHQ = new Headquarters(size - 1, size - 1, false, size);
+        friendlyHQ = new Headquarters(new Building.Location(x, y), true, size);
+        Headquarters enemyHQ = new Headquarters(new Building.Location(size - 1, size - 1), false, size);
         hQs = new Headquarters[]{friendlyHQ, enemyHQ};
     }
 

@@ -2,8 +2,8 @@ package Buildings;
 
 public class ResourceCollector extends Building {
 
-    public ResourceCollector(int x, int y, boolean friendly) {
-        super(x, y, friendly);
+    public ResourceCollector(Location location, boolean friendly) {
+        super(location, friendly);
     }
 
     @Override
