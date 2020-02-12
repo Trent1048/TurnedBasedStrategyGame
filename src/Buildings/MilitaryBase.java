@@ -29,16 +29,16 @@ public class MilitaryBase extends Building {
             Scanner console = new Scanner(System.in);
             System.out.println("What do you want to train?\n" +
                     "A = Artillery\n" +
-                    "U = Units");
-            String answer = console.nextLine();
-            if (answer.toUpperCase().startsWith("A") && newResources - 5 >= 0) {
+                    "U = Units\n" +
+                    "N = Nothing");
+            String answer = console.nextLine().toUpperCase();
+            if (answer.startsWith("A") && newResources - 5 >= 0) {
                 trainArtillery();
                 newResources -= 5;
-            } else if (answer.toUpperCase().startsWith("U") && newResources - 1 >= 0) {
+            } else if (answer.startsWith("U") && newResources - 1 >= 0) {
                 trainUnits();
                 newResources -= 1;
             }
-            console.close();
         } else {
             // TODO make a bot that makes good decisions here
         }

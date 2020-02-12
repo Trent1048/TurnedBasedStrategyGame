@@ -17,11 +17,6 @@ public class GameMap {
         hQs = new Headquarters[]{friendlyHQ, enemyHQ};
     }
 
-    // TODO make the HQ add it's own buildings
-    public void addBuilding(Building building) {
-        friendlyHQ.getBuildings().add(building);
-    }
-
     public void turn() {
         for(Headquarters hq : hQs) {
             hq.doTurns();

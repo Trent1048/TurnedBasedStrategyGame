@@ -2,6 +2,7 @@ package Buildings;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Scanner;
 
 // the main thing where everything happens
 public class Headquarters extends Building {
@@ -13,7 +14,7 @@ public class Headquarters extends Building {
     public Headquarters(int x, int y, boolean friendly, int boardSize) {
         super(x, y, friendly);
         this.size = boardSize;
-        resources = 0;
+        resources = 5; // start with 5 resources
         buildings = new ArrayList<>();
         buildings.add(this);
     }
@@ -28,14 +29,78 @@ public class Headquarters extends Building {
             if(isFriendly()) {
                 System.out.println("Now at " + resources + " resources");
             }
+            // since the HQ always runs last, it won't try to
+            // group newly purchased buildings into a turn
+            if (building == this) return;
         }
     }
 
+    @Override
+    public int turn(int resources) {
+        int newResources = resources;
+        if(isFriendly()) {
+            Scanner console = new Scanner(System.in);
+            System.out.println("Headquarters Turn\n" +
+                    "U = Upgrade a building\n" +
+                    "P = Purchase a new building\n" +
+                    "N = Nothing");
+            String input = console.nextLine().toUpperCase();
+            if(input.startsWith("U")) {
+
+            } else if(input.startsWith("P")) {
+                System.out.println("You own " +
+                        getBuildingOccurrences(House.class) + " / " +
+                        getNumOfAllowedBuildings(House.class) + " Houses, " +
+                        getBuildingOccurrences(ResourceCollector.class) + " / " +
+                        getNumOfAllowedBuildings(ResourceCollector.class) + " Resource Collectors, and " +
+                        getBuildingOccurrences(MilitaryBase.class) + " / " +
+                        getNumOfAllowedBuildings(MilitaryBase.class) + " Military Bases.\n" +
+                        "You have " + resources + " resources\n" +
+                        "What type of building would you like to buy?\n" +
+                        "H = House (1 resource)\n" +
+                        "R = Resource Collector (2 resources)\n" +
+                        "M = Military Base (3 resources)\n" +
+                        "N = Nothing");
+                String buildingType = console.nextLine().toUpperCase();
+                // sets up the location
+                if(!buildingType.startsWith("N")) {
+
+                    System.out.println("What is the desired x position of this building?");
+                    int x = console.nextInt();
+                    System.out.println("What is the desired y position of this building?");
+                    int y = console.nextInt();
+
+                    try {
+                        if (buildingType.startsWith("H") && buildingAdditionIsAllowed(House.class)) {
+                            if(resources >= 1) {
+                                addBuilding(new House(x, y, isFriendly()));
+                                newResources -= 1;
+                            }
+                        } else if (buildingType.startsWith("R") && buildingAdditionIsAllowed(ResourceCollector.class)) {
+                            if(resources >= 2) {
+                                addBuilding(new ResourceCollector(x, y, isFriendly()));
+                                newResources -= 2;
+                            }
+                        } else if (buildingType.startsWith("M") && buildingAdditionIsAllowed(MilitaryBase.class)) {
+                            if(resources >= 3) {
+                                addBuilding(new MilitaryBase(x, y, isFriendly()));
+                                newResources -= 3;
+                            }
+                        }
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("That location is already taken");
+                    }
+                }
+            }
+        }
+        return newResources;
+    }
+
     // how many buildings of a specific type allowed
-    public int getAllowedBuildings(Building building) {
+    public int getNumOfAllowedBuildings(Class c) {
         // can have 1 house for each level
-        if(building.getClass().equals(House.class)) return getLevel();
-        else if(building.getClass().equals(MilitaryBase.class)) {
+        if(c.equals(House.class)) return getLevel();
+        else if(c.equals(MilitaryBase.class)) {
             // level 1-3 = 1 allowed
             // level 4-6 = 2 allowed
             // level 7+ = 3 allowed
@@ -44,7 +109,7 @@ public class Headquarters extends Building {
             }
             // 3 is the max
             return 3;
-        } else if(building.getClass().equals(ResourceCollector.class)) {
+        } else if(c.equals(ResourceCollector.class)) {
             // get an extra collector every other level, starting with 1
             return getLevel() / 2 + 1;
         }
@@ -53,16 +118,20 @@ public class Headquarters extends Building {
         return 0;
     }
 
-    // returns how many times a type of building is on the map
-    private int getBuildingOccurrences(Building b) {
+    // returns how many instances of a building class there are
+    private int getBuildingOccurrences(Class c) {
         int occurrences = 0;
         for(Building building : buildings) {
             // counts each time it is the same class
-            if(building.getClass().equals(b.getClass())) occurrences++;
-            // if it is the same exact object, don't allow the user to add it
-            if(building == b) throw new IllegalArgumentException("Building " + b + " has already been added");
+            if(building.getClass().equals(c)) occurrences++;
         }
         return occurrences;
+    }
+
+    // if the allowed buildings is higher
+    // than the current amount of occurrences
+    private boolean buildingAdditionIsAllowed(Class c) {
+        return getBuildingOccurrences(c) < getNumOfAllowedBuildings(c);
     }
 
     public void addBuilding(Building building) {
@@ -79,7 +148,7 @@ public class Headquarters extends Building {
             }
         }
         // makes sure there aren't too many buildings before adding it
-        if(getAllowedBuildings(building) > getBuildingOccurrences(building)) {
+        if(getNumOfAllowedBuildings(building.getClass()) > getBuildingOccurrences(building.getClass())) {
             buildings.add(building);
         } else {
             throw new IllegalArgumentException("The max number of building type: " +
@@ -89,14 +158,6 @@ public class Headquarters extends Building {
 
     public ArrayList<Building> getBuildings() {
         return buildings;
-    }
-
-    @Override
-    public int turn(int resources) {
-        if(isFriendly()) {
-            System.out.println("Headquarters Turn");
-        }
-        return super.turn(resources);
     }
 
     @Override
