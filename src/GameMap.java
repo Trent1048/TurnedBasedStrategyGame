@@ -9,10 +9,10 @@ public class GameMap {
     private Headquarters friendlyHQ;
 
     // must start with an HQ
-    public GameMap(int size) {
+    public GameMap(int size, int x, int y) {
         this.size = size;
         // TODO randomize starting locations
-        friendlyHQ = new Headquarters(0, 0, true, size);
+        friendlyHQ = new Headquarters(x, y, true, size);
         Headquarters enemyHQ = new Headquarters(size - 1, size - 1, false, size);
         hQs = new Headquarters[]{friendlyHQ, enemyHQ};
     }

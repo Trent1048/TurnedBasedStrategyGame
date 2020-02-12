@@ -1,6 +1,7 @@
 package Buildings;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 // the main thing where everything happens
 public class Headquarters extends Building {
@@ -20,10 +21,13 @@ public class Headquarters extends Building {
     // executes one turn for every building associated with this HQ
     // including a turn from the HQ
     public void doTurns() {
+        Collections.sort(buildings);
         // goes through each type of building on the map and does it's turn
         for(Building building : buildings) {
             resources = building.turn(resources);
-            System.out.println("Now at " + resources + " resources");
+            if(isFriendly()) {
+                System.out.println("Now at " + resources + " resources");
+            }
         }
     }
 
@@ -89,7 +93,9 @@ public class Headquarters extends Building {
 
     @Override
     public int turn(int resources) {
-        System.out.println("Headquarters Turn");
+        if(isFriendly()) {
+            System.out.println("Headquarters Turn");
+        }
         return super.turn(resources);
     }
 

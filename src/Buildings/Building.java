@@ -1,7 +1,5 @@
 package Buildings;
 
-import java.util.Objects;
-
 // anything that extends this can
 // be displayed on the game map
 public abstract class Building implements Comparable<Building> {
