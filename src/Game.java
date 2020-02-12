@@ -22,5 +22,6 @@ public class Game {
         map.addBuilding(base, 6, 4);
         map.addBuilding(collector, 7, 3);
         System.out.println(map);
+        map.turn();
     }
 }

@@ -25,6 +25,12 @@ public class Headquarters extends Building {
     }
 
     @Override
+    public int turn(int resources) {
+        System.out.println("Headquarters Turn");
+        return super.turn(resources);
+    }
+
+    @Override
     public String getDisplayName() {
         return "HQ";
     }

@@ -13,6 +13,12 @@ public abstract class Building {
         level++;
     }
 
+    // does it's turn then returns what
+    // the resource count should be afterwards
+    public int turn(int resources) {
+        return resources;
+    }
+
     public abstract String getDisplayName(); // should be 2 chars long
 
     public int getLevel() {

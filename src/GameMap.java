@@ -7,18 +7,29 @@ import java.util.ArrayList;
 // the HQ
 public class GameMap {
     private int size;
+    private int resources;
     private Headquarters hq;
     private ArrayList<Building> buildings;
     private Building[][] spaces;
 
     // must start with an HQ
     public GameMap(int size, Headquarters hq, int hqX, int hqY) {
+        resources = 0;
         this.size = size;
         spaces = new Building[size][size];
         this.hq = hq;
         spaces[hqX][hqY] = hq;
         buildings = new ArrayList<Building>();
         buildings.add(hq);
+    }
+
+    // executes one turn in the game
+    public void turn() {
+        // goes through each type of building on the map and does it's turn
+        for(Building building : buildings) {
+            resources = building.turn(resources);
+            System.out.println("Now at " + resources + " resources");
+        }
     }
 
     // returns how many times a type of building is on the map
@@ -67,5 +78,9 @@ public class GameMap {
             display.append("\n\n");
         }
         return display.toString();
+    }
+
+    public int getResources() {
+        return resources;
     }
 }
