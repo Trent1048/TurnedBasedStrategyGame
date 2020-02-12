@@ -1,7 +1,9 @@
 package Buildings;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Scanner;
 
 // the main thing where everything happens
@@ -10,6 +12,14 @@ public class Headquarters extends Building {
     private ArrayList<Building> buildings;
     private int size;
     private int resources;
+    private static HashMap<String, Class> buildingTypeMap;
+
+    static {
+        buildingTypeMap = new HashMap<>();
+        buildingTypeMap.put("H", House.class);
+        buildingTypeMap.put("R", ResourceCollector.class);
+        buildingTypeMap.put("M", MilitaryBase.class);
+    }
 
     public Headquarters(int x, int y, boolean friendly, int boardSize) {
         super(x, y, friendly);
@@ -49,49 +59,51 @@ public class Headquarters extends Building {
 
             } else if(input.startsWith("P")) {
                 System.out.println("You own " +
-                        getBuildingOccurrences(House.class) + " / " +
-                        getNumOfAllowedBuildings(House.class) + " Houses, " +
-                        getBuildingOccurrences(ResourceCollector.class) + " / " +
-                        getNumOfAllowedBuildings(ResourceCollector.class) + " Resource Collectors, and " +
-                        getBuildingOccurrences(MilitaryBase.class) + " / " +
-                        getNumOfAllowedBuildings(MilitaryBase.class) + " Military Bases.\n" +
+                        buildingOccurrenceFraction(House.class) + " Houses, " +
+                        buildingOccurrenceFraction(ResourceCollector.class) + " Resource Collectors, and " +
+                        buildingOccurrenceFraction(MilitaryBase.class) + " Military Bases.\n" +
                         "You have " + resources + " resources\n" +
                         "What type of building would you like to buy?\n" +
                         "H = House (1 resource)\n" +
                         "R = Resource Collector (2 resources)\n" +
                         "M = Military Base (3 resources)\n" +
                         "N = Nothing");
-                String buildingType = console.nextLine().toUpperCase();
-                // sets up the location
-                if(!buildingType.startsWith("N")) {
+                input = console.nextLine().toUpperCase().substring(0,1);
+                Class buildingType = buildingTypeMap.get(input);
 
-                    System.out.println("What is the desired x position of this building?");
+                if(buildingType != null) {
+                    // sets up the location
+                    System.out.print("X: ");
                     int x = console.nextInt();
-                    System.out.println("What is the desired y position of this building?");
+                    System.out.print("Y: ");
                     int y = console.nextInt();
 
-                    try {
-                        if (buildingType.startsWith("H") && buildingAdditionIsAllowed(House.class)) {
-                            if(resources >= 1) {
-                                addBuilding(new House(x, y, isFriendly()));
-                                newResources -= 1;
+                    // don't add if there are too many already
+                    if(buildingAdditionIsAllowed(buildingType)) {
+                        // don't add if can't afford
+                        if(getBuildingPrice(buildingType) <= newResources) {
+                            newResources -= getBuildingPrice(buildingType);
+                            switch (input) {
+                                case "H":
+                                    addBuilding(new House(x, y, isFriendly()));
+                                    break;
+                                case "R":
+                                    addBuilding(new ResourceCollector(x, y, isFriendly()));
+                                    break;
+                                case "M":
+                                    addBuilding(new MilitaryBase(x, y, isFriendly()));
+                                    break;
                             }
-                        } else if (buildingType.startsWith("R") && buildingAdditionIsAllowed(ResourceCollector.class)) {
-                            if(resources >= 2) {
-                                addBuilding(new ResourceCollector(x, y, isFriendly()));
-                                newResources -= 2;
-                            }
-                        } else if (buildingType.startsWith("M") && buildingAdditionIsAllowed(MilitaryBase.class)) {
-                            if(resources >= 3) {
-                                addBuilding(new MilitaryBase(x, y, isFriendly()));
-                                newResources -= 3;
-                            }
+                        } else {
+                            System.out.println("You cannot afford that building");
                         }
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("That location is already taken");
+                    } else {
+                        System.out.println("You already own the max number of that building");
                     }
                 }
             }
+        } else {
+            // TODO make a bot to make good decisions
         }
         return newResources;
     }
@@ -132,6 +144,24 @@ public class Headquarters extends Building {
     // than the current amount of occurrences
     private boolean buildingAdditionIsAllowed(Class c) {
         return getBuildingOccurrences(c) < getNumOfAllowedBuildings(c);
+    }
+
+    // for displaying how many buildings the player
+    // owns out of the max number they can own
+    private String buildingOccurrenceFraction(Class c) {
+        return getBuildingOccurrences(c) + " / " + getNumOfAllowedBuildings(c);
+    }
+
+    // stores how much it costs to purchase a building
+    private static int getBuildingPrice(Class c) {
+        if(c.equals(House.class)) {
+            return 1;
+        } else if(c.equals(ResourceCollector.class)) {
+            return 2;
+        } else if(c.equals(MilitaryBase.class)) {
+            return 3;
+        }
+        return 0;
     }
 
     public void addBuilding(Building building) {
