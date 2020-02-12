@@ -4,6 +4,10 @@ import java.util.Scanner;
 
 public class MilitaryBase extends Building {
 
+    public MilitaryBase(int x, int y, boolean friendly) {
+        super(x, y, friendly);
+    }
+
     private void trainUnits() {
         System.out.println("Units trained");
         // TODO make this work

@@ -2,6 +2,10 @@ package Buildings;
 
 public class House extends Building {
 
+    public House(int x, int y, boolean friendly) {
+        super(x, y, friendly);
+    }
+
     @Override
     public int turn(int resources) {
         System.out.println("House Turn");

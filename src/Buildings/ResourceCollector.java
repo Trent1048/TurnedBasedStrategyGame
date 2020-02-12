@@ -2,6 +2,10 @@ package Buildings;
 
 public class ResourceCollector extends Building {
 
+    public ResourceCollector(int x, int y, boolean friendly) {
+        super(x, y, friendly);
+    }
+
     @Override
     public int turn(int resources) {
         int newResources = resources + getLevel();
