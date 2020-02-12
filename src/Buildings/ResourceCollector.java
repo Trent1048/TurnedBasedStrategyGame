@@ -15,4 +15,9 @@ public class ResourceCollector extends Building {
     public String getDisplayName() {
         return "RC";
     }
+
+    @Override
+    protected int getImportance() {
+        return 4;
+    }
 }

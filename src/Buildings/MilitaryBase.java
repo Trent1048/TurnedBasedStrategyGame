@@ -41,4 +41,9 @@ public class MilitaryBase extends Building {
     public String getDisplayName() {
         return "MB";
     }
+
+    @Override
+    protected int getImportance() {
+        return 2;
+    }
 }

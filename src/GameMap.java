@@ -1,5 +1,6 @@
 import Buildings.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 // holds all the buildings in the game and
 // takes care of how many buildings of each
@@ -25,6 +26,7 @@ public class GameMap {
 
     // executes one turn in the game
     public void turn() {
+        Collections.sort(buildings);
         // goes through each type of building on the map and does it's turn
         for(Building building : buildings) {
             resources = building.turn(resources);

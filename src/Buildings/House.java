@@ -12,4 +12,9 @@ public class House extends Building {
     public String getDisplayName() {
         return "H_";
     }
+
+    @Override
+    protected int getImportance() {
+        return 3;
+    }
 }

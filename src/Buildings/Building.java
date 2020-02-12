@@ -2,7 +2,7 @@ package Buildings;
 
 // anything that extends this can
 // be displayed on the game map
-public abstract class Building {
+public abstract class Building implements Comparable<Building> {
     private int level;
 
     public Building() {
@@ -23,5 +23,13 @@ public abstract class Building {
 
     public int getLevel() {
         return level;
+    }
+
+    // for compareTo
+    protected abstract int getImportance();
+
+    @Override
+    public int compareTo(Building other) {
+        return other.getImportance() - this.getImportance();
     }
 }

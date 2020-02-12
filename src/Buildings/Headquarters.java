@@ -34,4 +34,9 @@ public class Headquarters extends Building {
     public String getDisplayName() {
         return "HQ";
     }
+
+    @Override
+    protected int getImportance() {
+        return 1;
+    }
 }
