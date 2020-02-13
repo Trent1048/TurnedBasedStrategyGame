@@ -13,7 +13,7 @@ public class GameMap {
         this.size = size;
         // TODO randomize starting locations
         friendlyHQ = new Headquarters(new Building.Location(x, y), true, size);
-        Headquarters enemyHQ = new Headquarters(new Building.Location(size - 1, size - 1), false, size);
+        Headquarters enemyHQ = new Headquarters(new Building.Location(0, 0), false, size);
         hQs = new Headquarters[]{friendlyHQ, enemyHQ};
     }
 
@@ -38,19 +38,36 @@ public class GameMap {
         }
 
         StringBuilder display = new StringBuilder();
-        for(int row = 0; row < size; row++) {
+        // the loop is funky so it will print like a normal graph
+        // with x horizontal, y vertical, and (0, 0) in the bottom left
+        for(int row = size - 1; row >= 0; row--) {
+            display.append("\n");
             for(int col = 0; col < size; col++) {
-                Building current = spaces[row][col];
+                Building current = spaces[col][row];
                 if(current != null) {
+                    // make it blue or red depending on if it's friendly
+                    if(current.isFriendly()) display.append("\u001B[34m");
+                    else display.append("\u001B[31m");
+
                     display.append(current.getDisplayName());
                     display.append("_");
                     display.append(current.getLevel());
+
+                    // stop the color
+                    display.append("\u001B[0m");
                 }
                 else display.append("____");
                 display.append(" ");
             }
-            display.append("\n\n");
+            display.append(row + "\n");
         }
+
+        // adds numbers to the bottom row
+        for(int i = 0; i < size; i++) {
+            display.append(i + "    ");
+        }
+        display.append("\n");
+
         return display.toString();
     }
 }

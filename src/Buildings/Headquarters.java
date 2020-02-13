@@ -56,9 +56,9 @@ public class Headquarters extends Building {
         if(isFriendly()) {
             Scanner console = new Scanner(System.in);
             System.out.println("Headquarters Turn\n" +
-                    "U = Upgrade a building\n" +
-                    "P = Purchase a new building\n" +
-                    "N = Nothing");
+                    "\tU = Upgrade a building\n" +
+                    "\tP = Purchase a new building\n" +
+                    "\tN = Nothing");
             String input = console.nextLine().toUpperCase();
             if(input.startsWith("U")) {
                 System.out.println("You own:");
@@ -83,6 +83,7 @@ public class Headquarters extends Building {
                         if(selectedBuilding.getUpgradeCost() <= newResources) {
                             newResources -= selectedBuilding.getUpgradeCost();
                             selectedBuilding.upgrade();
+                            System.out.println("Building upgraded");
                         } else {
                             System.out.println("You don't have enough resources");
                         }
@@ -97,10 +98,10 @@ public class Headquarters extends Building {
                         buildingOccurrenceFraction(MilitaryBase.class) + " Military Bases.\n" +
                         "You have " + resources + " resources\n" +
                         "What type of building would you like to buy?\n" +
-                        "H = House (1 resource)\n" +
-                        "R = Resource Collector (2 resources)\n" +
-                        "M = Military Base (3 resources)\n" +
-                        "N = Nothing");
+                        "\tH = House (1 resource)\n" +
+                        "\tR = Resource Collector (2 resources)\n" +
+                        "\tM = Military Base (3 resources)\n" +
+                        "\tN = Nothing");
                 input = console.nextLine().toUpperCase().substring(0, 1);
                 Class buildingType = buildingTypeMap.get(input);
 

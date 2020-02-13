@@ -28,9 +28,9 @@ public class MilitaryBase extends Building {
         if(isFriendly()) {
             Scanner console = new Scanner(System.in);
             System.out.println("What do you want to train?\n" +
-                    "A = Artillery\n" +
-                    "U = Units\n" +
-                    "N = Nothing");
+                    "\tA = Artillery\n" +
+                    "\tU = Units\n" +
+                    "\tN = Nothing");
             String answer = console.nextLine().toUpperCase();
             if (answer.startsWith("A") && newResources - 5 >= 0) {
                 trainArtillery();
