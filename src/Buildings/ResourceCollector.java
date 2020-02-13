@@ -18,6 +18,16 @@ public class ResourceCollector extends Building {
     }
 
     @Override
+    public int getUpgradeCost() {
+        return 3 * getLevel();
+    }
+
+    @Override
+    public String toString() {
+        return "Resource Collector at " + this.getLocation() + " level " + this.getLevel();
+    }
+
+    @Override
     public String getDisplayName() {
         return "RC";
     }

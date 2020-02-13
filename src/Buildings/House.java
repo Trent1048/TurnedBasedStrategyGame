@@ -15,6 +15,16 @@ public class House extends Building {
     }
 
     @Override
+    public int getUpgradeCost() {
+        return 2 * getLevel();
+    }
+
+    @Override
+    public String toString() {
+        return "House at " + this.getLocation() + " level " + this.getLevel();
+    }
+
+    @Override
     public String getDisplayName() {
         return "H_";
     }

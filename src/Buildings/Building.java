@@ -15,9 +15,11 @@ public abstract class Building implements Comparable<Building> {
         this.friendly = friendly;
     }
 
-    public void upgrade() {
+    protected void upgrade() {
         level++;
     }
+
+    public abstract int getUpgradeCost();
 
     // does it's turn then returns what
     // the resource count should be afterwards
@@ -26,6 +28,10 @@ public abstract class Building implements Comparable<Building> {
     }
 
     public abstract String getDisplayName(); // should be 2 chars long
+
+    public String toString() {
+        return "Building at " + this.getLocation() + " level " + this.getLevel();
+    }
 
     public int getLevel() {
         return level;

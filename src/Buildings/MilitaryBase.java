@@ -46,6 +46,16 @@ public class MilitaryBase extends Building {
     }
 
     @Override
+    public int getUpgradeCost() {
+        return 10 * getLevel();
+    }
+
+    @Override
+    public String toString() {
+        return "Military Base at " + this.getLocation() + " level " + this.getLevel();
+    }
+
+    @Override
     public String getDisplayName() {
         return "MB";
     }

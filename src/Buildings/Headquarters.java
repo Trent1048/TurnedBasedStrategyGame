@@ -34,12 +34,15 @@ public class Headquarters extends Building {
     // executes one turn for every building associated with this HQ
     // including a turn from the HQ
     public void doTurns() {
+        int newResources;
+        // sorts them so it will do resources turn first, then houses, then military, then HQ
         Collections.sort(buildings);
         // goes through each type of building on the map and does it's turn
         for(Building building : buildings) {
-            resources = building.turn(resources);
-            if(isFriendly()) {
-                System.out.println("Now at " + resources + " resources");
+            newResources = building.turn(resources);
+            if(newResources != resources) {
+                resources = newResources;
+                if(isFriendly()) System.out.println("Now at " + resources + " resources");
             }
             // since the HQ always runs last, it won't try to
             // group newly purchased buildings into a turn
@@ -58,7 +61,35 @@ public class Headquarters extends Building {
                     "N = Nothing");
             String input = console.nextLine().toUpperCase();
             if(input.startsWith("U")) {
+                System.out.println("You own:");
+                // print out all the buildings location, level, and type next to an index
+                int index = 1;
+                for(Building building : buildings) {
+                    System.out.println(index + ") " + building + " (costs " + building.getUpgradeCost() + " resource)");
+                    index++;
+                }
+                System.out.println("What do you want to upgrade? (select by index)");
+                int selectedBuildingIndex = console.nextInt() - 1;
 
+                // only pick a building if it is a valid one from the buildings ArrayList
+                if(selectedBuildingIndex >= buildings.size() || selectedBuildingIndex < 0) {
+                    System.out.println("That is not a valid selection");
+                } else {
+                    Building selectedBuilding = buildings.get(selectedBuildingIndex);
+
+                    // to be upgraded, a building must have a lower level than the HQ
+                    if(selectedBuilding.getLevel() < getLevel() || selectedBuilding == this) {
+                        // only upgrade if the user has enough to pay for it
+                        if(selectedBuilding.getUpgradeCost() <= newResources) {
+                            newResources -= selectedBuilding.getUpgradeCost();
+                            selectedBuilding.upgrade();
+                        } else {
+                            System.out.println("You don't have enough resources");
+                        }
+                    } else {
+                        System.out.println("The building is already at max level for this HQ level");
+                    }
+                }
             } else if(input.startsWith("P")) {
                 System.out.println("You own " +
                         buildingOccurrenceFraction(House.class) + " Houses, " +
@@ -70,7 +101,7 @@ public class Headquarters extends Building {
                         "R = Resource Collector (2 resources)\n" +
                         "M = Military Base (3 resources)\n" +
                         "N = Nothing");
-                input = console.nextLine().toUpperCase().substring(0,1);
+                input = console.nextLine().toUpperCase().substring(0, 1);
                 Class buildingType = buildingTypeMap.get(input);
 
                 if(buildingType != null) {
@@ -118,6 +149,8 @@ public class Headquarters extends Building {
         }
         return newResources;
     }
+
+    // Methods for dealing with the associated buildings:
 
     // how many buildings of a specific type allowed
     public int getNumOfAllowedBuildings(Class c) {
@@ -177,6 +210,18 @@ public class Headquarters extends Building {
 
     public ArrayList<Building> getBuildings() {
         return buildings;
+    }
+
+    // Basic Building Functions:
+
+    @Override
+    public int getUpgradeCost() {
+        return 15 * getLevel();
+    }
+
+    @Override
+    public String toString() {
+        return "Headquarters at " + this.getLocation() + " level " + this.getLevel();
     }
 
     @Override

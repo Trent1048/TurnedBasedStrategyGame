@@ -1,13 +1,16 @@
-import Buildings.*;
+import java.util.Scanner;
 
 public class Game {
     public static void main(String[] args) {
-        // make the buildings
+        Scanner console = new Scanner(System.in);
+        // setup the board
         GameMap map = new GameMap(10, 5, 3);
-        // print the map
+        // loop through the turns
         while(true) {
             System.out.println(map);
             map.turn();
+            System.out.print("Press Enter to continue");
+            console.nextLine();
         }
     }
 }
