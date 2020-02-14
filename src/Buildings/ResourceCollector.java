@@ -19,7 +19,7 @@ public class ResourceCollector extends Building {
 
     @Override
     public int getUpgradeCost() {
-        return 3 * getLevel();
+        return 3 * (int)Math.pow(getLevel() + 1, 2);
     }
 
     @Override

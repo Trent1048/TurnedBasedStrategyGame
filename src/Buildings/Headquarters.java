@@ -103,9 +103,9 @@ public class Headquarters extends Building {
                         buildingOccurrenceFraction(MilitaryBase.class) + " Military Bases.\n" +
                         "You have " + resources + " resources\n" +
                         "What type of building would you like to buy?\n" +
-                        "\tH = House (1 resource)\n" +
-                        "\tR = Resource Collector (2 resources)\n" +
-                        "\tM = Military Base (3 resources)\n" +
+                        "\tH = House (costs " + getBuildingPrice(House.class) + " resources)\n" +
+                        "\tR = Resource Collector (costs " + getBuildingPrice(ResourceCollector.class) + " resources)\n" +
+                        "\tM = Military Base (costs " + getBuildingPrice(MilitaryBase.class) + " resources)\n" +
                         "\tN = Nothing");
                 input = console.nextLine().toUpperCase();
                 Class buildingType = buildingTypeMap.get(input);
@@ -118,16 +118,22 @@ public class Headquarters extends Building {
                     int y = console.nextInt();
                     Location buildingLoc = new Location(x, y);
 
-                    // make sure the location is open
-                    if(buildingLocations.contains(buildingLoc)) {
-                        System.out.println("There is already a building in that location");
+                    // don't let the user place outside the map
+                    if(x >= size || y >= size) {
+                        System.out.println("Selected location is outside the map");
                         return newResources;
                     } else {
-                        // only add if it's within the territory
-                        if(isWithinTerritory(buildingLoc)) buildingLocations.add(buildingLoc);
-                        else {
-                            System.out.println("That location is outside your territory");
+                        // make sure the location is open
+                        if (buildingLocations.contains(buildingLoc)) {
+                            System.out.println("There is already a building in that location");
                             return newResources;
+                        } else {
+                            // only add if it's within the territory
+                            if (isWithinTerritory(buildingLoc)) buildingLocations.add(buildingLoc);
+                            else {
+                                System.out.println("That location is outside your territory");
+                                return newResources;
+                            }
                         }
                     }
 
@@ -208,13 +214,13 @@ public class Headquarters extends Building {
     }
 
     // stores how much it costs to purchase a building
-    private static int getBuildingPrice(Class c) {
+    private int getBuildingPrice(Class c) {
         if(c.equals(House.class)) {
-            return 1;
+            return getLevel() * 2;
         } else if(c.equals(ResourceCollector.class)) {
-            return 2;
+            return 4 * getLevel();
         } else if(c.equals(MilitaryBase.class)) {
-            return 3;
+            return 10 * getLevel();
         }
         return 0;
     }
@@ -241,7 +247,7 @@ public class Headquarters extends Building {
 
     @Override
     public int getUpgradeCost() {
-        return 15 * getLevel();
+        return 15 * getLevel() * 2 - 15;
     }
 
     @Override

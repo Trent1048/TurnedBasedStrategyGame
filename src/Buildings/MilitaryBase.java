@@ -46,7 +46,7 @@ public class MilitaryBase extends Building {
 
     @Override
     public int getUpgradeCost() {
-        return 10 * getLevel();
+        return 5 * (int)Math.pow(getLevel() + 1, 2);
     }
 
     @Override

@@ -16,7 +16,7 @@ public class House extends Building {
 
     @Override
     public int getUpgradeCost() {
-        return 2 * getLevel();
+        return (int)Math.pow(getLevel() + 1, 2);
     }
 
     @Override
