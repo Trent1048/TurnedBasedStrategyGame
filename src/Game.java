@@ -42,12 +42,21 @@ public class Game {
 
         // let the user pick a starting location
         System.out.println(map);
-        System.out.println("Where do you want to put your Headquarters?");
-        System.out.print("X: ");
-        int x = console.nextInt();
-        System.out.print("Y: ");
-        int y = console.nextInt();
-        map.addHQ(x, y, true);
+
+        int x, y;
+        while (true) {
+            try {
+                System.out.println("Where do you want to put your Headquarters?");
+                System.out.print("X: ");
+                x = console.nextInt();
+                System.out.print("Y: ");
+                y = console.nextInt();
+                map.addHQ(x, y, true);
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid location");
+            }
+        }
 
         // loop through the turns
         while(true) {

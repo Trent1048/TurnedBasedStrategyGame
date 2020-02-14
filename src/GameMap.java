@@ -18,12 +18,25 @@ public class GameMap {
     }
 
     public void addHQ(int x, int y, boolean friendly) {
+        // don't let building go out of the map
+        if(x >= size || y >= size) throw new IllegalArgumentException("Selected location is outside the map");
+
         Headquarters newHQ = new Headquarters(new Building.Location(x, y), friendly, size);
         // only allow one HQ to be controlled by the player (AKA friendly)
         if(friendly) {
+            // don't allow one HQ to go on top of another one
+            if(enemyHQ != null && newHQ.getLocation().equals(enemyHQ.getLocation())) {
+                throw new IllegalArgumentException("There is already another HQ in that spot");
+            }
+
             if(friendlyHQ != null) throw new IllegalArgumentException("There is already an existing friendly HQ");
             friendlyHQ = newHQ;
         } else {
+            // don't allow one HQ to go on top of another one
+            if(friendlyHQ != null && newHQ.getLocation().equals(friendlyHQ.getLocation())) {
+                throw new IllegalArgumentException("There is already another HQ in that spot");
+            }
+
             if(enemyHQ != null) throw new IllegalArgumentException("There is already an existing enemy HQ");
             enemyHQ = newHQ;
         }
