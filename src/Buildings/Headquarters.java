@@ -79,13 +79,18 @@ public class Headquarters extends Building {
 
                     // to be upgraded, a building must have a lower level than the HQ
                     if(selectedBuilding.getLevel() < getLevel() || selectedBuilding == this) {
-                        // only upgrade if the user has enough to pay for it
-                        if(selectedBuilding.getUpgradeCost() <= newResources) {
-                            newResources -= selectedBuilding.getUpgradeCost();
-                            selectedBuilding.upgrade();
-                            System.out.println("Building upgraded");
+                        // 10 is the max level
+                        if(selectedBuilding.getLevel() < 10) {
+                            // only upgrade if the user has enough to pay for it
+                            if (selectedBuilding.getUpgradeCost() <= newResources) {
+                                newResources -= selectedBuilding.getUpgradeCost();
+                                selectedBuilding.upgrade();
+                                System.out.println("Building upgraded");
+                            } else {
+                                System.out.println("You don't have enough resources");
+                            }
                         } else {
-                            System.out.println("You don't have enough resources");
+                            System.out.println("The building is at max level");
                         }
                     } else {
                         System.out.println("The building is already at max level for this HQ level");
@@ -102,7 +107,7 @@ public class Headquarters extends Building {
                         "\tR = Resource Collector (2 resources)\n" +
                         "\tM = Military Base (3 resources)\n" +
                         "\tN = Nothing");
-                input = console.nextLine().toUpperCase().substring(0, 1);
+                input = console.nextLine().toUpperCase();
                 Class buildingType = buildingTypeMap.get(input);
 
                 if(buildingType != null) {

@@ -1,20 +1,29 @@
 import Buildings.*;
 
+import java.util.ArrayList;
+
 // stores HQs, lets them do their turns,
 // and displays the board
 public class GameMap {
     private int size;
     // for looping through both HQs
-    private Headquarters[] hQs;
+    private ArrayList<Headquarters> hQs;
     private Headquarters friendlyHQ;
 
     // must start with an HQ
-    public GameMap(int size, int x, int y) {
+    public GameMap(int size) {
         this.size = size;
-        // TODO randomize starting locations
-        friendlyHQ = new Headquarters(new Building.Location(x, y), true, size);
-        Headquarters enemyHQ = new Headquarters(new Building.Location(0, 0), false, size);
-        hQs = new Headquarters[]{friendlyHQ, enemyHQ};
+        hQs = new ArrayList<>();
+    }
+
+    public void addHQ(int x, int y, boolean friendly) {
+        Headquarters newHQ = new Headquarters(new Building.Location(x, y), friendly, size);
+        // only allow one HQ to be controlled by the player (AKA friendly)
+        if(friendly) {
+            if(friendlyHQ != null) throw new IllegalArgumentException("There is already an existing friendly HQ");
+            friendlyHQ = newHQ;
+        }
+        hQs.add(newHQ);
     }
 
     public void turn() {
@@ -59,12 +68,14 @@ public class GameMap {
                 else display.append("____");
                 display.append(" ");
             }
-            display.append(row + "\n");
+            display.append(row);
+            display.append("\n");
         }
 
         // adds numbers to the bottom row
         for(int i = 0; i < size; i++) {
-            display.append(i + "    ");
+            display.append(i);
+            display.append("    ");
         }
         display.append("\n");
 
