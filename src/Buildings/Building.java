@@ -9,6 +9,7 @@ public abstract class Building implements Comparable<Building> {
     private Location location;
     private boolean friendly;
 
+    // TODO add a health system
     public Building(Location location, boolean friendly) {
         level = 1;
         this.location = location;
@@ -87,6 +88,11 @@ public abstract class Building implements Comparable<Building> {
 
         public String toString() {
             return "(" + x + ", " + y + ")";
+        }
+
+        // how far away the other Location is
+        public int getDistance(Location other) {
+            return (int)Math.sqrt(Math.pow(x-other.getX(), 2) + Math.pow(y-other.getY(), 2));
         }
     }
 }

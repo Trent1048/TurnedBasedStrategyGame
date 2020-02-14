@@ -123,7 +123,12 @@ public class Headquarters extends Building {
                         System.out.println("There is already a building in that location");
                         return newResources;
                     } else {
-                        buildingLocations.add(buildingLoc);
+                        // only add if it's within the territory
+                        if(isWithinTerritory(buildingLoc)) buildingLocations.add(buildingLoc);
+                        else {
+                            System.out.println("That location is outside your territory");
+                            return newResources;
+                        }
                     }
 
                     // don't add if there are too many already
@@ -216,6 +221,20 @@ public class Headquarters extends Building {
 
     public ArrayList<Building> getBuildings() {
         return buildings;
+    }
+
+    // takes in a Location and returns if it is withing the allowed territory of the HQ
+    // the HQ has a territory of 2 spaces in each direction, Houses have 1 in each direction
+    public boolean isWithinTerritory(Location location) {
+        boolean withinTerritory = false;
+        for(Building building : buildings) {
+            if(building == this && 2 >= location.getDistance(building.getLocation())) { // if it is the HQ
+                withinTerritory = true;
+            } else if(building.getClass().equals(House.class) && 1 >= location.getDistance(building.getLocation())) {
+                withinTerritory = true;
+            }
+        }
+        return withinTerritory;
     }
 
     // Basic Building Functions:

@@ -12,14 +12,12 @@ public class MilitaryBase extends Building {
         if(isFriendly()) {
             System.out.println("Units trained");
         }
-        // TODO make this work
     }
 
     private void trainArtillery() {
         if(isFriendly()) {
             System.out.println("Artillery Trained");
         }
-        // TODO make this work
     }
 
     @Override
@@ -32,6 +30,7 @@ public class MilitaryBase extends Building {
                     "\tU = Units\n" +
                     "\tN = Nothing");
             String answer = console.nextLine().toUpperCase();
+            // TODO make a system for training troops that takes a certain number of turns
             if (answer.startsWith("A") && newResources - 5 >= 0) {
                 trainArtillery();
                 newResources -= 5;

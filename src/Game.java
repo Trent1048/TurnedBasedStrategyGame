@@ -14,8 +14,8 @@ public class Game {
                 "Headquarters gives access to more buildings and levels that increase their efficiency.\n" +
                 "\t- Resource Collector: These produce resources every turn, upgrading them grants more" +
                 "resources for each turn.\n" +
-                "\t- House: These... don't have a purpose yet.\n" + // TODO give houses a purpose
-                // possible idea for houses is that they increase the health points of each building
+                "\t- House: These increase your territory by one space and boost the health points of each building." +
+                "Upgrading increases the amount of health boost the Houses provide\n" +
                 "\t- Military Base: These are used to train Military Units and Artillery. They can only train " +
                 "one thing at a time, upgrading them strengthens the Units and Artillery they train.\n\n" +
                 "The Board:\n" +
@@ -28,7 +28,9 @@ public class Game {
                 "\t- On your turn, you will be prompted to do certain actions like training Units and Artillery or " +
                 "upgrading and purchasing buildings.\n" +
                 "\t- These actions cost resources so make sure to get your Resource Collectors up and running so you" +
-                "don't run out of resources.\n");
+                "don't run out of resources.\n" +
+                "\t- Buildings can only be placed within your territory (the blue area). Purple spaces are shared " +
+                "territory between both sides\n");
 
         System.out.print("Press Enter to continue");
         console.nextLine();

@@ -9,6 +9,7 @@ public class GameMap {
     // for looping through both HQs
     private ArrayList<Headquarters> hQs;
     private Headquarters friendlyHQ;
+    private Headquarters enemyHQ;
 
     // must start with an HQ
     public GameMap(int size) {
@@ -22,6 +23,9 @@ public class GameMap {
         if(friendly) {
             if(friendlyHQ != null) throw new IllegalArgumentException("There is already an existing friendly HQ");
             friendlyHQ = newHQ;
+        } else {
+            if(enemyHQ != null) throw new IllegalArgumentException("There is already an existing enemy HQ");
+            enemyHQ = newHQ;
         }
         hQs.add(newHQ);
     }
@@ -64,8 +68,28 @@ public class GameMap {
 
                     // stop the color
                     display.append("\u001B[0m");
+                } else {
+                    Building.Location currentLocation = new Building.Location(col, row);
+
+                    boolean withinFriendlyTerritory = false;
+                    if(friendlyHQ != null) withinFriendlyTerritory = friendlyHQ.isWithinTerritory(currentLocation);
+                    boolean withinEnemyTerritory = false;
+                    if(enemyHQ != null) withinEnemyTerritory = enemyHQ.isWithinTerritory(currentLocation);
+
+                    // decides if it should add a color stop symbol or not
+                    boolean addedColor = false;
+                    if(withinEnemyTerritory || withinFriendlyTerritory) {
+                        // make it blue if it is just in friendly territory
+                        if(!withinEnemyTerritory) display.append("\u001B[34m");
+                        // make it red if it is just in enemy territory
+                        else if(!withinFriendlyTerritory) display.append("\u001B[31m");
+                        // make it purple if it is in both territories
+                        else display.append("\u001B[35m");
+                        addedColor = true;
+                    }
+                    display.append("____");
+                    if(addedColor) display.append("\u001B[0m");
                 }
-                else display.append("____");
                 display.append(" ");
             }
             display.append(row);
