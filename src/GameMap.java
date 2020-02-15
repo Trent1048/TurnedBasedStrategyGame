@@ -43,10 +43,20 @@ public class GameMap {
         hQs.add(newHQ);
     }
 
-    public void turn() {
+    // returns true when the game ends
+    public boolean turn() {
         for(Headquarters hq : hQs) {
             hq.doTurns();
         }
+        // test to see if the game is over
+        if(friendlyHQ != null && friendlyHQ.isDestroyed()) {
+            System.out.println("You lost!");
+            return true;
+        } else if(enemyHQ != null && enemyHQ.isDestroyed()) {
+            System.out.println("You win!");
+            return true;
+        }
+        return false;
     }
 
     public String toString() {

@@ -39,6 +39,9 @@ public class Headquarters extends Building {
         Collections.sort(buildings);
         // goes through each type of building on the map and does it's turn
         for(Building building : buildings) {
+            // if a building gets destroyed, get rid of it
+            if(building.isDestroyed()) buildings.remove(building);
+
             newResources = building.turn(resources);
             if(newResources != resources) {
                 resources = newResources;

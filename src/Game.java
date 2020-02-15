@@ -59,9 +59,10 @@ public class Game {
         }
 
         // loop through the turns
-        while(true) {
+        boolean gameOver = false;
+        while(!gameOver) {
             System.out.println(map);
-            map.turn();
+            gameOver = map.turn();
             System.out.print("Press Enter to continue");
             console.nextLine();
         }

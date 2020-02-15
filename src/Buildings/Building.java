@@ -8,9 +8,12 @@ public abstract class Building implements Comparable<Building> {
     private int level;
     private Location location;
     private boolean friendly;
+    private int hitPoints;
+    private boolean destroyed;
 
-    // TODO add a health system
+    // TODO make turns not end until the user actually does something
     public Building(Location location, boolean friendly) {
+        hitPoints = 100;
         level = 1;
         this.location = location;
         this.friendly = friendly;
@@ -34,16 +37,25 @@ public abstract class Building implements Comparable<Building> {
         return "Building at " + this.getLocation() + " level " + this.getLevel();
     }
 
+    public void damage(int damageAmount) {
+        hitPoints -= damageAmount;
+        if(hitPoints <= 0) destroyed = true;
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
     public int getLevel() {
         return level;
     }
 
-    // for compareTo
-    protected abstract int getImportance();
-
     public boolean isFriendly() {
         return friendly;
     }
+
+    // for compareTo
+    protected abstract int getImportance();
 
     @Override
     public int compareTo(Building other) {
