@@ -24,19 +24,24 @@ public class MilitaryBase extends Building {
     public int turn(int resources) {
         int newResources = resources;
         if(isFriendly()) {
-            Scanner console = new Scanner(System.in);
-            System.out.println("What do you want to train?\n" +
-                    "\tA = Artillery\n" +
-                    "\tU = Units\n" +
-                    "\tN = Nothing");
-            String answer = console.nextLine().toUpperCase();
-            // TODO make a system for training troops that takes a certain number of turns
-            if (answer.startsWith("A") && newResources - 5 >= 0) {
-                trainArtillery();
-                newResources -= 5;
-            } else if (answer.startsWith("U") && newResources - 1 >= 0) {
-                trainUnits();
-                newResources -= 1;
+            boolean turnIsOver = false;
+            while(!turnIsOver) {
+                Scanner console = new Scanner(System.in);
+                System.out.println("What do you want to train?\n" +
+                        "\tA = Artillery\n" +
+                        "\tU = Units\n" +
+                        "\tN = Nothing");
+                String answer = console.nextLine().toUpperCase();
+                // TODO make a system for training troops that takes a certain number of turns
+                if (answer.startsWith("A") && newResources - 5 >= 0) {
+                    trainArtillery();
+                    newResources -= 5;
+                    turnIsOver = true;
+                } else if (answer.startsWith("U") && newResources - 1 >= 0) {
+                    trainUnits();
+                    newResources -= 1;
+                    turnIsOver = true;
+                } else if (answer.startsWith("N")) turnIsOver = true;
             }
         } else {
             // TODO make a bot that makes good decisions here

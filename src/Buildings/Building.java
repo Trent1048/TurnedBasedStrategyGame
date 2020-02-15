@@ -66,6 +66,12 @@ public abstract class Building implements Comparable<Building> {
         return location;
     }
 
+    // if the word should be plural, return "s", if the inputted num is 1, return ""
+    public static String pluralize(int num) {
+        if(num == 1) return "";
+        return "s";
+    }
+
     // for storing the location of the building
     public static class Location {
         private int x;

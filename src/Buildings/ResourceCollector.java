@@ -10,7 +10,7 @@ public class ResourceCollector extends Building {
     public int turn(int resources) {
         int newResources = resources + getLevel();
         if(isFriendly()) {
-            System.out.println("Resource Collector Turn");
+            System.out.println("Resource Collector Turn\nGenerated " + getLevel() + " resource" + pluralize(getLevel()));
         }
         // produces an amount of resources
         // equal to it's level

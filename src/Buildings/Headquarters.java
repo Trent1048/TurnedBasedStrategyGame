@@ -45,7 +45,7 @@ public class Headquarters extends Building {
             newResources = building.turn(resources);
             if(newResources != resources) {
                 resources = newResources;
-                if(isFriendly()) System.out.println("Now at " + resources + " resources");
+                if(isFriendly()) System.out.println("Now at " + resources + " resource" + pluralize(resources));
             }
             // since the HQ always runs last, it won't try to
             // group newly purchased buildings into a turn
@@ -57,112 +57,124 @@ public class Headquarters extends Building {
     public int turn(int resources) {
         int newResources = resources;
         if(isFriendly()) {
-            Scanner console = new Scanner(System.in);
-            System.out.println("Headquarters Turn\n" +
-                    "\tU = Upgrade a building\n" +
-                    "\tP = Purchase a new building\n" +
-                    "\tN = Nothing");
-            String input = console.nextLine().toUpperCase();
-            if(input.startsWith("U")) {
-                System.out.println("You own:");
-                // print out all the buildings location, level, and type next to an index
-                int index = 1;
-                for(Building building : buildings) {
-                    System.out.println(index + ") " + building + " (costs " + building.getUpgradeCost() + " resource)");
-                    index++;
-                }
-                System.out.println("What do you want to upgrade? (select by index)");
-                int selectedBuildingIndex = console.nextInt() - 1;
-
-                // only pick a building if it is a valid one from the buildings ArrayList
-                if(selectedBuildingIndex >= buildings.size() || selectedBuildingIndex < 0) {
-                    System.out.println("That is not a valid selection");
-                } else {
-                    Building selectedBuilding = buildings.get(selectedBuildingIndex);
-
-                    // to be upgraded, a building must have a lower level than the HQ
-                    if(selectedBuilding.getLevel() < getLevel() || selectedBuilding == this) {
-                        // 10 is the max level
-                        if(selectedBuilding.getLevel() < 10) {
-                            // only upgrade if the user has enough to pay for it
-                            if (selectedBuilding.getUpgradeCost() <= newResources) {
-                                newResources -= selectedBuilding.getUpgradeCost();
-                                selectedBuilding.upgrade();
-                                System.out.println("Building upgraded");
-                            } else {
-                                System.out.println("You don't have enough resources");
-                            }
-                        } else {
-                            System.out.println("The building is at max level");
-                        }
-                    } else {
-                        System.out.println("The building is already at max level for this HQ level");
-                    }
-                }
-            } else if(input.startsWith("P")) {
-                System.out.println("You own " +
-                        buildingOccurrenceFraction(House.class) + " Houses, " +
-                        buildingOccurrenceFraction(ResourceCollector.class) + " Resource Collectors, and " +
-                        buildingOccurrenceFraction(MilitaryBase.class) + " Military Bases.\n" +
-                        "You have " + resources + " resources\n" +
-                        "What type of building would you like to buy?\n" +
-                        "\tH = House (costs " + getBuildingPrice(House.class) + " resources)\n" +
-                        "\tR = Resource Collector (costs " + getBuildingPrice(ResourceCollector.class) + " resources)\n" +
-                        "\tM = Military Base (costs " + getBuildingPrice(MilitaryBase.class) + " resources)\n" +
+            boolean turnIsOver = false;
+            while(!turnIsOver) {
+                Scanner console = new Scanner(System.in);
+                System.out.println("Headquarters Turn\n" +
+                        "\tU = Upgrade a building\n" +
+                        "\tP = Purchase a new building\n" +
                         "\tN = Nothing");
-                input = console.nextLine().toUpperCase();
-                Class buildingType = buildingTypeMap.get(input);
-
-                if(buildingType != null) {
-                    // sets up the location
-                    System.out.print("X: ");
-                    int x = console.nextInt();
-                    System.out.print("Y: ");
-                    int y = console.nextInt();
-                    Location buildingLoc = new Location(x, y);
-
-                    // don't let the user place outside the map
-                    if(x >= size || y >= size) {
-                        System.out.println("Selected location is outside the map");
-                        return newResources;
-                    } else {
-                        // make sure the location is open
-                        if (buildingLocations.contains(buildingLoc)) {
-                            System.out.println("There is already a building in that location");
-                            return newResources;
-                        } else {
-                            // only add if it's within the territory
-                            if (isWithinTerritory(buildingLoc)) buildingLocations.add(buildingLoc);
-                            else {
-                                System.out.println("That location is outside your territory");
-                                return newResources;
-                            }
-                        }
+                String input = console.nextLine().toUpperCase();
+                if (input.startsWith("U")) {
+                    System.out.println("You own:");
+                    // print out all the buildings location, level, and type next to an index
+                    int index = 1;
+                    for (Building building : buildings) {
+                        int cost = building.getUpgradeCost();
+                        System.out.println(index + ") " + building + " (costs " + cost +
+                                " resource" + pluralize(cost) + ")");
+                        index++;
                     }
+                    System.out.println("What do you want to upgrade? (select by index)");
+                    int selectedBuildingIndex = console.nextInt() - 1;
 
-                    // don't add if there are too many already
-                    if(buildingAdditionIsAllowed(buildingType)) {
-                        // don't add if can't afford
-                        if(getBuildingPrice(buildingType) <= newResources) {
-                            newResources -= getBuildingPrice(buildingType);
-                            switch (input) {
-                                case "H":
-                                    buildings.add(new House(buildingLoc, isFriendly()));
-                                    break;
-                                case "R":
-                                    buildings.add(new ResourceCollector(buildingLoc, isFriendly()));
-                                    break;
-                                case "M":
-                                    buildings.add(new MilitaryBase(buildingLoc, isFriendly()));
-                                    break;
+                    // only pick a building if it is a valid one from the buildings ArrayList
+                    if (selectedBuildingIndex >= buildings.size() || selectedBuildingIndex < 0) {
+                        System.out.println("That is not a valid selection");
+                    } else {
+                        Building selectedBuilding = buildings.get(selectedBuildingIndex);
+
+                        // to be upgraded, a building must have a lower level than the HQ
+                        if (selectedBuilding.getLevel() < getLevel() || selectedBuilding == this) {
+                            // 10 is the max level
+                            if (selectedBuilding.getLevel() < 10) {
+                                // only upgrade if the user has enough to pay for it
+                                if (selectedBuilding.getUpgradeCost() <= newResources) {
+                                    newResources -= selectedBuilding.getUpgradeCost();
+                                    turnIsOver = true;
+                                    selectedBuilding.upgrade();
+                                    System.out.println("Building upgraded");
+                                } else {
+                                    System.out.println("You don't have enough resources");
+                                }
+                            } else {
+                                System.out.println("The building is at max level");
                             }
                         } else {
-                            System.out.println("You cannot afford that building");
+                            System.out.println("The building is already at max level for your Headquarter\n" +
+                                    "Upgrade it to unlock more upgrade levels.");
                         }
-                    } else {
-                        System.out.println("You already own the max number of that building");
                     }
-                }
+                } else if (input.startsWith("P")) {
+                    System.out.println("You own " +
+                            buildingOccurrenceFraction(House.class) + " Houses, " +
+                            buildingOccurrenceFraction(ResourceCollector.class) + " Resource Collectors, and " +
+                            buildingOccurrenceFraction(MilitaryBase.class) + " Military Bases.\n" +
+                            "You have " + resources + " resources\n" +
+                            "What type of building would you like to buy?\n" +
+                            "\tH = House (costs " + getBuildingPrice(House.class) + " resources)\n" +
+                            "\tR = Resource Collector (costs " + getBuildingPrice(ResourceCollector.class) + " resources)\n" +
+                            "\tM = Military Base (costs " + getBuildingPrice(MilitaryBase.class) + " resources)\n" +
+                            "\tN = Nothing");
+                    input = console.nextLine().toUpperCase();
+                    Class buildingType = buildingTypeMap.get(input);
+
+                    if (buildingType != null) {
+
+                        // don't add if there are too many already
+                        if (buildingAdditionIsAllowed(buildingType)) {
+                            // don't add if can't afford
+                            if (getBuildingPrice(buildingType) <= newResources) {
+                                newResources -= getBuildingPrice(buildingType);
+
+                                // sets up the location
+                                System.out.print("X: ");
+                                int x = console.nextInt();
+                                System.out.print("Y: ");
+                                int y = console.nextInt();
+                                Location buildingLoc = new Location(x, y);
+
+                                // don't let the user place outside the map
+                                if (x >= size || y >= size) {
+                                    System.out.println("Selected location is outside the map");
+                                    return newResources;
+                                } else {
+                                    // make sure the location is open
+                                    if (buildingLocations.contains(buildingLoc)) {
+                                        System.out.println("There is already a building in that location");
+                                        return newResources;
+                                    } else {
+                                        // only add if it's within the territory
+                                        if (isWithinTerritory(buildingLoc)) buildingLocations.add(buildingLoc);
+                                        else {
+                                            System.out.println("That location is outside your territory");
+                                            return newResources;
+                                        }
+                                    }
+                                }
+
+                                switch (input) {
+                                    case "H":
+                                        buildings.add(new House(buildingLoc, isFriendly()));
+                                        turnIsOver = true;
+                                        break;
+                                    case "R":
+                                        buildings.add(new ResourceCollector(buildingLoc, isFriendly()));
+                                        turnIsOver = true;
+                                        break;
+                                    case "M":
+                                        buildings.add(new MilitaryBase(buildingLoc, isFriendly()));
+                                        turnIsOver = true;
+                                        break;
+                                }
+                            } else {
+                                System.out.println("You cannot afford that building");
+                            }
+                        } else {
+                            System.out.println("You already own the max number of that building");
+                        }
+                    }
+                } else if (input.startsWith("N")) turnIsOver = true;
             }
         } else {
             // TODO make a bot to make good decisions
