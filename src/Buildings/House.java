@@ -1,5 +1,7 @@
 package Buildings;
 
+import Locations.Location;
+
 public class House extends Building {
 
     public House(Location location, boolean friendly) {

@@ -1,6 +1,7 @@
 package Buildings;
 
 import java.util.Scanner;
+import Locations.Location;
 
 public class MilitaryBase extends Building {
 

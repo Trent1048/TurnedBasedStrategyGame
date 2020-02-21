@@ -1,17 +1,16 @@
 package Buildings;
 
-import java.util.Objects;
+import Locations.*;
 
 // anything that extends this can
 // be displayed on the game map
-public abstract class Building implements Comparable<Building> {
+public abstract class Building implements Comparable<Building>, Locatable {
     private int level;
     private Location location;
     private boolean friendly;
     private int hitPoints;
     private boolean destroyed;
 
-    // TODO make turns not end until the user actually does something
     public Building(Location location, boolean friendly) {
         hitPoints = 100;
         level = 1;
@@ -31,6 +30,7 @@ public abstract class Building implements Comparable<Building> {
         return resources;
     }
 
+    @Override
     public abstract String getDisplayName(); // should be 2 chars long
 
     public String toString() {
@@ -46,10 +46,12 @@ public abstract class Building implements Comparable<Building> {
         return destroyed;
     }
 
+    @Override
     public int getLevel() {
         return level;
     }
 
+    @Override
     public boolean isFriendly() {
         return friendly;
     }
@@ -62,6 +64,7 @@ public abstract class Building implements Comparable<Building> {
         return other.getImportance() - this.getImportance();
     }
 
+    @Override
     public Location getLocation() {
         return location;
     }
@@ -70,47 +73,5 @@ public abstract class Building implements Comparable<Building> {
     public static String pluralize(int num) {
         if(num == 1) return "";
         return "s";
-    }
-
-    // for storing the location of the building
-    public static class Location {
-        private int x;
-        private int y;
-
-        public Location(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Location location = (Location) o;
-            return x == location.x &&
-                    y == location.y;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(x, y);
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public String toString() {
-            return "(" + x + ", " + y + ")";
-        }
-
-        // how far away the other Location is
-        public int getDistance(Location other) {
-            return (int)Math.sqrt(Math.pow(x-other.getX(), 2) + Math.pow(y-other.getY(), 2));
-        }
     }
 }

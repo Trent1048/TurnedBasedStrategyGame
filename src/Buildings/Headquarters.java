@@ -1,6 +1,7 @@
 package Buildings;
 
 import java.util.*;
+import Locations.Location;
 
 // the main thing where everything happens
 public class Headquarters extends Building {
@@ -125,7 +126,6 @@ public class Headquarters extends Building {
                         if (buildingAdditionIsAllowed(buildingType)) {
                             // don't add if can't afford
                             if (getBuildingPrice(buildingType) <= newResources) {
-                                newResources -= getBuildingPrice(buildingType);
 
                                 // sets up the location
                                 System.out.print("X: ");
@@ -152,6 +152,8 @@ public class Headquarters extends Building {
                                         }
                                     }
                                 }
+
+                                newResources -= getBuildingPrice(buildingType);
 
                                 switch (input) {
                                     case "H":

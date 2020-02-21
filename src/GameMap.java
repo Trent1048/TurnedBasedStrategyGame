@@ -1,6 +1,7 @@
 import Buildings.*;
 
 import java.util.ArrayList;
+import Locations.*;
 
 // stores HQs, lets them do their turns,
 // and displays the board
@@ -21,7 +22,7 @@ public class GameMap {
         // don't let building go out of the map
         if(x >= size || y >= size) throw new IllegalArgumentException("Selected location is outside the map");
 
-        Headquarters newHQ = new Headquarters(new Building.Location(x, y), friendly, size);
+        Headquarters newHQ = new Headquarters(new Location(x, y), friendly, size);
         // only allow one HQ to be controlled by the player (AKA friendly)
         if(friendly) {
             // don't allow one HQ to go on top of another one
@@ -92,7 +93,7 @@ public class GameMap {
                     // stop the color
                     display.append("\u001B[0m");
                 } else {
-                    Building.Location currentLocation = new Building.Location(col, row);
+                    Location currentLocation = new Location(col, row);
 
                     boolean withinFriendlyTerritory = false;
                     if(friendlyHQ != null) withinFriendlyTerritory = friendlyHQ.isWithinTerritory(currentLocation);

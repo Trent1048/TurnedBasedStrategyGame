@@ -1,5 +1,7 @@
 package Buildings;
 
+import Locations.Location;
+
 public class ResourceCollector extends Building {
 
     public ResourceCollector(Location location, boolean friendly) {
