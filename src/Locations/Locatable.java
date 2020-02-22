@@ -5,7 +5,7 @@ public interface Locatable {
 
     public Location getLocation();
     public boolean isFriendly();
-    public String getDisplayName();
+    public String getDisplayName(); // should be 2 chars long
     public int getLevel();
 
 }

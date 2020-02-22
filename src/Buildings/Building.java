@@ -30,9 +30,6 @@ public abstract class Building implements Comparable<Building>, Locatable {
         return resources;
     }
 
-    @Override
-    public abstract String getDisplayName(); // should be 2 chars long
-
     public String toString() {
         return "Building at " + this.getLocation() + " level " + this.getLevel();
     }
