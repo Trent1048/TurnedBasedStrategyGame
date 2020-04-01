@@ -1,53 +1,88 @@
 package Buildings;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import Locations.Location;
+import Units.*;
 
 public class MilitaryBase extends Building {
 
+    private int unitTrainTime;
+    private UnitType unitTraining;
+    private ArrayList<Unit> units;
+
     public MilitaryBase(Location location, boolean friendly) {
         super(location, friendly);
+        unitTraining = null;
+        unitTrainTime = 0;
+        units = new ArrayList<>();
     }
 
-    private void trainUnits() {
-        if(isFriendly()) {
-            System.out.println("Units trained");
-        }
+    private enum UnitType {
+        SOLDIER,
+        ARTILLERY
     }
 
-    private void trainArtillery() {
-        if(isFriendly()) {
-            System.out.println("Artillery Trained");
+    private void updateUnitTraining() {
+        if(isFriendly()) System.out.println("Units training");
+
+        unitTrainTime--;
+
+        if(unitTrainTime == 0) {
+            // add a unit to the units list and reset the variables associated with it
+            if(unitTraining == UnitType.SOLDIER) {
+                units.add(new Soldier(this.getLocation(), this.isFriendly(), this.getLevel()));
+                if(isFriendly()) System.out.println("Soldier trained");
+            } else if(unitTraining == UnitType.ARTILLERY) {
+                units.add(new Artillery(this.getLocation(), this.isFriendly(), this.getLevel()));
+                if(isFriendly()) System.out.println("Artillery trained");
+            }
         }
     }
 
     @Override
     public int turn(int resources) {
+        if (isFriendly()) System.out.println("Military Base Turn");
         int newResources = resources;
-        if(isFriendly()) {
-            boolean turnIsOver = false;
-            while(!turnIsOver) {
-                Scanner console = new Scanner(System.in);
-                System.out.println("What do you want to train?\n" +
-                        "\tA = Artillery\n" +
-                        "\tU = Units\n" +
-                        "\tN = Nothing");
-                String answer = console.nextLine().toUpperCase();
-                // TODO make a system for training troops that takes a certain number of turns
-                if (answer.startsWith("A") && newResources - 5 >= 0) {
-                    trainArtillery();
-                    newResources -= 5;
-                    turnIsOver = true;
-                } else if (answer.startsWith("U") && newResources - 1 >= 0) {
-                    trainUnits();
-                    newResources -= 1;
-                    turnIsOver = true;
-                } else if (answer.startsWith("N")) turnIsOver = true;
+        // if there are units training, don't do anything
+        // except wait for them to continue training
+        if(unitTrainTime == 0) {
+            if (isFriendly()) {
+                boolean turnIsOver = false;
+                while (!turnIsOver) {
+                    Scanner console = new Scanner(System.in);
+                    System.out.println("What do you want to train?\n" +
+                            "\tA = Artillery (5 resources, 3 turns)\n" +
+                            "\tS = Soldiers (3 resources, 1 turn)\n" +
+                            "\tN = Nothing");
+                    String answer = console.nextLine().toUpperCase();
+                    if (answer.startsWith("A") && newResources - 5 >= 0) {
+                        // set up the multi turn unit training system
+                        unitTrainTime = 3;
+                        unitTraining = UnitType.ARTILLERY;
+
+                        newResources -= 5;
+                        turnIsOver = true;
+                    } else if (answer.startsWith("S") && newResources - 3 >= 0) {
+                        // set up the multi turn unit training system
+                        unitTrainTime = 1;
+                        unitTraining = UnitType.SOLDIER;
+
+                        newResources -= 3;
+                        turnIsOver = true;
+                    } else if (answer.startsWith("N")) turnIsOver = true;
+                }
+            } else {
+                // TODO make a bot that makes good decisions here
             }
         } else {
-            // TODO make a bot that makes good decisions here
+            updateUnitTraining();
         }
         return newResources;
+    }
+
+    public ArrayList<Unit> getUnits() {
+        return units;
     }
 
     @Override
